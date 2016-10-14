@@ -10,8 +10,8 @@
   ],
   "homepage": "https://tylerofathenry.github.io/mage-patch-hero/",
   "require": {
-    "symfony/console": "3.1.*",
-    "composer/installers": "~1.0"
+    "composer/installers": "~1.0",
+    "n98/magerun": "^1.97"
   },
   "suggest":{
     "ext-mbstring": "*",

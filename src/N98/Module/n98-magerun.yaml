@@ -1,0 +1,7 @@
+autoloaders:
+  Etre\Shell\N98: %module%/src
+
+commands:
+  customCommands:
+    - Etre\Shell\N98\Console\Commands\PlayCommand
+    - Etre\Shell\N98\Console\Commands\PatchCommand

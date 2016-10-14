@@ -1,8 +1,9 @@
 <?php
 
-namespace Etre\Shell\Console\Commands;
+namespace Etre\Shell\N98\Console\Commands;
 
-use Etre\Shell\Helper\DirectoryHelper;
+use N98\Magento\Command\AbstractMagentoCommand;
+    use Etre\Shell\Helper\DirectoryHelper;
 use Etre\Shell\Helper\PatchesHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -14,7 +15,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
-class PlayCommand extends Command
+class PlayCommand extends AbstractMagentoCommand
 {
     /** @var DirectoryHelper $directoryHelper */
     protected $directoryHelper;
