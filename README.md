@@ -1,5 +1,5 @@
 # Mage Shell Hero
-Magento 1.x shell script to assist with patching issues. No official release.
+Magento 1.x shell enhancement package. No official release.
 
 Install Mage Shell Hero
 =
@@ -7,14 +7,14 @@ Install Mage Shell Hero
 1. Modify composer.json `extra:{}` to include:
 
         "installer-paths": {
-            "shell/etre/{$name}": [
+            "lib/n98-magerun/modules/{$name}": [
                 "etre/mage-shell-hero"
             ]
         },
 
 2. Execute `composer require etre/mage-patch-hero --dev`
 
-You should see the package installed at `[magento root]/shell/etre/mage-shell-hero`.
+You should see the package installed at `[magento root]/lib/n98-magerun/modules/mage-shell-hero`.
 
 How to use
 =
