@@ -1,9 +1,10 @@
 <?php
 
-namespace Etre\Shell\N98\Console\Commands;
+namespace Etre98;
 
 use N98\Magento\Command\AbstractMagentoCommand;
-    use Etre\Shell\Helper\DirectoryHelper;
+
+use Etre\Shell\Helper\DirectoryHelper;
 use Etre\Shell\Helper\PatchesHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
