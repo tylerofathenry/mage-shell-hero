@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+
+require 'src/Helper/DirectoryHelper.php';
+require 'autoloader.php';
+
+use Symfony\Component\Console\Application;
+use Etre\Shell\Console\Commands\PatchCommand;
+
+$application = new Application();
+
+$application->add(new PatchCommand());
+
+$application->run();

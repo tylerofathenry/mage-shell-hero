@@ -1,0 +1,41 @@
+{
+  "name": "etre/mage-shell-hero",
+  "description": "Magneto 1.x Console Helper",
+  "type": "library",
+  "keywords": [
+    "magento",
+    "patch",
+    "helper",
+    "mage patch hero"
+  ],
+  "homepage": "https://tylerofathenry.github.io/mage-patch-hero/",
+  "require": {
+    "symfony/console": "3.1.*",
+    "composer/installers": "~1.0"
+  },
+  "license": "GPL-3.0",
+  "authors": [
+    {
+      "name": "Tyler Mills",
+      "email": "tylerssn@gmail.com",
+      "homepage": "https://tylerofathenry.github.io/",
+      "role": "PHP Fellow"
+    }
+  ],
+  "support": {
+    "email": "tylerssn@gmail.com"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0-dev"
+    },
+    "installer-name": "mage-shell-hero"
+  },
+  "autoload": {
+    "psr-4": {
+      "Etre\\Shell\\": "src/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
