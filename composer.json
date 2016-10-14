@@ -1,7 +1,7 @@
 {
   "name": "etre/mage-shell-hero",
   "description": "Magneto 1.x Console Helper",
-  "type": "library",
+  "type": "magento-library",
   "keywords": [
     "magento",
     "patch",
