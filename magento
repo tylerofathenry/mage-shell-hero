@@ -6,9 +6,11 @@ require 'autoloader.php';
 
 use Symfony\Component\Console\Application;
 use Etre\Shell\Console\Commands\PatchCommand;
+use Etre\Shell\Console\Commands\PlayCommand;
 
 $application = new Application();
 
 $application->add(new PatchCommand());
+$application->add(new PlayCommand());
 
 $application->run();
