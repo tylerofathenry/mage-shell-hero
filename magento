@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+require 'src/Helper/DirectoryHelper.php';
+require 'autoloader.php';
+
+use Symfony\Component\Console\Application;
+use Etre\Shell\Console\Commands\PatchCommand;
+use Etre\Shell\Console\Commands\PlayCommand;
+//use Etre\Shell\Console\Commands\Installer\RecoverCommand as InstallRecoverCommand;
+//use Etre\Shell\Console\Commands\Installer\RunCommand as InstallRunCommand;
+
+$application = new Application();
+
+$application->add(new PatchCommand());
+$application->add(new PlayCommand());
+//$application->add(new InstallRecoverCommand());
+//$application->add(new InstallRecoverCommand());
+
+$application->run();

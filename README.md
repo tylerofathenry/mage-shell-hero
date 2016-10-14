@@ -15,3 +15,10 @@ Install Mage Shell Hero
 2. Execute `composer require etre/mage-patch-hero --dev`
 
 You should see the package installed at `[magento root]/shell/etre/mage-shell-hero`.
+
+How to use
+=
+
+If you used the install path from the installation instructions above, cd into `shell/etre/mage-shell-hero`. 
+
+To see a list of commands execute `php magento`.

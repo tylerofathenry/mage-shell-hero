@@ -8,22 +8,17 @@
     "helper",
     "mage patch hero"
   ],
-  "homepage": "https://tylerofathenry.github.io/mage-patch-hero/",
+  "homepage": "https://github.com/tylerofathenry/mage-shell-hero",
   "require": {
     "composer/installers": "~1.0",
     "n98/magerun": "^1.97"
-  },
-  "suggest":{
-    "ext-mbstring": "*",
-    "ext-curl": "*",
-    "ext-pdo-mysql": "*"
   },
   "license": "GPL-3.0",
   "authors": [
     {
       "name": "Tyler Mills",
       "email": "tylerssn@gmail.com",
-      "homepage": "https://tylerofathenry.github.io/",
+      "homepage": "https://github.com/tylerofathenry/mage-shell-hero",
       "role": "PHP Fellow"
     }
   ],
