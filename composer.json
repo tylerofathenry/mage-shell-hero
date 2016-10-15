@@ -11,7 +11,7 @@
   "homepage": "https://github.com/tylerofathenry/mage-shell-hero",
   "require": {
     "composer/installers": "~1.0",
-    "etre/magerun": "^1.97.22.*"
+    "etre/magerun": "^1.97.22.1"
   },
   "license": "GPL-3.0",
   "authors": [
