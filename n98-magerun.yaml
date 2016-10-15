@@ -4,4 +4,3 @@ autoloaders:
 commands:
   customCommands:
     - Etre\Shell\Console\Commands\PatchCommand
-    - Etre\Shell\Console\Commands\PlayCommand
