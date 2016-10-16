@@ -1,5 +1,5 @@
 # Mage Shell Hero
-Magento 1.x shell enhancement package. No official release.
+Magento 1.x shell enhancement commands. Pre-release.
 
 Install Mage Shell Hero
 =
@@ -11,8 +11,8 @@ Install Mage Shell Hero
                 "etre/mage-shell-hero"
             ]
         },
-
-2. Execute `composer require etre/mage-patch-hero --dev`
+   Do not change this location. magerun inherits Mage Shell Hero commands from th *lib/n98-magerun/modules` directory.
+2. Execute `composer require etre/mage-patch-hero`
 
 You should see the package installed at `[magento root]/lib/n98-magerun/modules/mage-shell-hero`.
 
