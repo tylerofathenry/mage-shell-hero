@@ -3,8 +3,10 @@
 namespace Etre\Shell\Helper;
 
 use Etre\Shell\Helper\DirectoryHelper;
+use N98\Util\Console\Helper\MagentoHelper;
+use Symfony\Component\Debug\Debug;
 
-class PatchesHelper
+class PatchesHelper extends MagentoHelper
 {
     protected $STATUS_REVERTED = "REVERTED";
     protected $STATUS_APPLIED = "APPLIED";
@@ -51,7 +53,46 @@ class PatchesHelper
         return $this;
     }
 
-    public function getData($sort = "DESC")
+    public function getPatches($sort = "DESC", $lookupPatchId = null, $lookupPatchVersion = null)
+    {
+        $searchByPatchId = $this->isValidPatchId($lookupPatchId) ? intval($lookupPatchId) : false;
+        $hasVersionCriteria = $this->isValidVersion($lookupPatchVersion);
+        $searchByVersion = $searchByPatchId && $hasVersionCriteria;
+        $patchList = $this->getPatchList($sort);
+        if($searchByPatchId):
+            $patchList = $this->applyPatchIdFilter($lookupPatchId, $patchList);
+        endif;
+        if($searchByVersion):
+            $patchList = $this->applyPatchVersionFilter($lookupPatchVersion, $patchList);
+        endif;
+        return $patchList;
+
+    }
+
+    /**
+     * @param $lookupPatchId
+     * @return bool
+     */
+    public function isValidPatchId($lookupPatchId)
+    {
+        if(is_numeric($lookupPatchId)):
+            return intval($lookupPatchId) > 0;
+        endif;
+        return false;
+    }
+
+    /**
+     * @param $lookupPatchVersion
+     * @return bool
+     */
+    public function isValidVersion($lookupPatchVersion)
+    {
+        if(is_numeric($lookupPatchVersion)):
+            return intval($lookupPatchVersion) > 0;
+        endif;
+    }
+
+    public function getPatchList($sort = "DESC")
     {
         $parsedPatchContent = $this->getParsedPatchContent();
         $patches = [];
@@ -84,6 +125,7 @@ class PatchesHelper
 
     private function getParsedPatchContent()
     {
+        $mage = \Mage::app();
         $csv = new \Varien_File_Csv();
 
         $patchListArray = $csv->setDelimiter("|")->getData($this->pathToPatchesList());
@@ -105,5 +147,41 @@ class PatchesHelper
         $patchListArray = array_map('array_filter', $patchListArray);
         $patchListArray = array_filter($patchListArray);
         return $patchListArray;
+    }
+
+    /**
+     * @param $lookupPatchId
+     * @param $searchByPatchId
+     * @param $patchList
+     */
+    protected function applyPatchIdFilter($lookupPatchId, $patchList)
+    {
+        foreach($patchList as $patchKey => $patch):
+            $patchName = strtoupper($patch['headers'][1]);
+            $patchNameParts = explode("-", $patchName);
+            $currentPatchId = $patchNameParts[1];
+            if($currentPatchId !== $lookupPatchId):
+                unset($patchList[$patchKey]);
+            endif;
+        endforeach;
+        return $patchList;
+    }
+
+    /**
+     * @param $lookupPatchVersion
+     * @param $searchByPatchId
+     * @param $patchList
+     */
+    protected function applyPatchVersionFilter($lookupPatchVersion, $patchList)
+    {
+        foreach($patchList as $patchKey => $patch):
+            $patchVersion = strtoupper($patch['headers'][3]);
+            $patchVersionParts = explode("V", $patchVersion);
+            $currentPatchVersion = $patchVersionParts[1];
+            if($currentPatchVersion !== $lookupPatchVersion):
+                unset($patchList[$patchKey]);
+            endif;
+        endforeach;
+        return $patchList;
     }
 }

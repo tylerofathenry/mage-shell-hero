@@ -3,4 +3,5 @@ autoloaders:
 
 commands:
   customCommands:
-    - Etre\Shell\Console\Commands\PatchCommand
+    - Etre\Shell\Console\Commands\Patch\ListCommand
+    - Etre\Shell\Console\Commands\Patch\DebugCommand

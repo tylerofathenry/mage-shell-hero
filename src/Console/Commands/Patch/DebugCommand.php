@@ -1,6 +1,6 @@
 <?php
 
-namespace Etre\Shell\Console\Commands;
+namespace Etre\Shell\Console\Commands\Patch;
 
 use Etre\Shell\Helper\DirectoryHelper;
 use Etre\Shell\Helper\PatchesHelper;
@@ -14,7 +14,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
-class PatchCommand extends Command
+class DebugCommand extends Command
 {
     /** @var DirectoryHelper $directoryHelper */
     protected $directoryHelper;
@@ -37,9 +37,9 @@ class PatchCommand extends Command
     public function configure()
     {
         $this
-            ->setName('patch:list')
-            ->setDescription('List applied patches')
-            ->addOption('sort', null, InputOption::VALUE_OPTIONAL, "Sort by patch installation date: ASC | DESC","DESC")
+            ->setName('etre:patch:review')
+            ->setDescription('Review code that could impacted by a patch.')
+            ->addArgument('patch-id', InputOption::VALUE_REQUIRED, "Accepted arguments: <comment>SUPEE-XXXX | XXXX | Path ID</comment>")
             ->addOption('no-details', null, null, "Minimizes patch details shown")
             ->setHelp("This command lists your applied patches");
     }

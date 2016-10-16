@@ -13,7 +13,7 @@ class DirectoryHelper
     function getApplicationDirectory()
     {
         $currentDirectory = $this->getCurrentDirectory();
-        $directoryToFind = 'shell';
+        $directoryToFind = 'lib';
         $shellSearch = $this->getDirectoryLiteralTerm($directoryToFind);
         $parentDirectoryPosition = $this->getParentDirectoryPosition($currentDirectory, $shellSearch);
         return substr($currentDirectory, 0, $parentDirectoryPosition);
