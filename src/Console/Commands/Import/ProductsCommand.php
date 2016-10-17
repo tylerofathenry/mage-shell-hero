@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Classes\PHPExcel;
 use Maatwebsite\Excel\Excel;
 use N98\Magento\Command\AbstractMagentoCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -39,7 +40,7 @@ class ProductsCommand extends AbstractMagentoCommand
         $this
             ->setName('etre:import:products')
             ->setDescription('Import products')
-            ->addArgument("path", null, "Path to file in var directory: <comment>import/filename.csv</comment>")
+            ->addArgument("path",InputArgument::REQUIRED, "Path to Excel compatible file within var/import directory: <comment>subdir/filename.ext</comment>")
             ->addOption("map-attribute", "m", InputOption::VALUE_REQUIRED,
                 "Map attribute codes to headers." .
                 "\n<comment>-m mage_attribute_code:file_column_header,mage_attribute_code:file_column_header,...</comment>" .
@@ -62,7 +63,7 @@ class ProductsCommand extends AbstractMagentoCommand
         $mapInput = new MapInput($attributeMapString);
         $mapInput->getMappedAttributes();
 
-        $importFile = \Mage::getBaseDir() . DS . "var" . DS . "import" . DS . "import-20161017070019-1_Prepped_for_import_-_artificial_attributes-libre.csv";
+        $importFile = \Mage::getBaseDir() . DS . "var" . DS . "import" . DS . $input->getArgument("path");
         $excelDocument = $this->loadFile($importFile);
         $sheet = $excelDocument->getSheet(0);
         $lastColumn = $sheet->getHighestColumn();
