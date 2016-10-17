@@ -5,3 +5,4 @@ commands:
   customCommands:
     - Etre\Shell\Console\Commands\Patch\ListCommand
     - Etre\Shell\Console\Commands\Patch\DebugCommand
+    - Etre\Shell\Console\Commands\Import\ProductsCommand
