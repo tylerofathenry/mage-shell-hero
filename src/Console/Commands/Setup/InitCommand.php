@@ -44,6 +44,8 @@ class InitCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+
+        $this->getApplication()->initMagento();
         $this->makePublicDirectory();
         $output->writeln("<info>Created ./public directory</info>");
         $this->symlinkPublicMageRoot(".htaccess");
@@ -62,9 +64,11 @@ class InitCommand extends Command
         $output->writeln("<info>Linked favicon.ico in public directory</info>");
         $this->symlinkPublicMageRoot("sitemap");
         $output->writeln("<info>Linked sitemaps in public directory</info>");
+        $this->symlinkPublicMageRoot("var");
+        $output->writeln("<info>Linked var in public directory</info>");
         $output->writeln([
             "<comment>All done! You can set your document root to ./public.</comment>",
-            "\t<info>Please make sure your public directory and index.php are accessible by your server.</info>"
+            "\t<info> - Please make sure your public directory and index.php are accessible by your server.</info>"
         ]);
 
     }
@@ -77,7 +81,7 @@ class InitCommand extends Command
         $directoryHelper = $this->directoryHelper;
         $magentoDirectory = $directoryHelper->getApplicationDirectory();
         $pathToPublic = $magentoDirectory . $directoryHelper::DS . "public";
-        rmdir(($pathToPublic));
+        mageDelTree($pathToPublic);
         return mkdir($pathToPublic,2770);
     }
 
@@ -88,9 +92,7 @@ class InitCommand extends Command
         $pathToPublic = $magentoDirectory . $directoryHelper::DS . "public";
         $link = $pathToPublic . $directoryHelper::DS . $imitationDirectoryName;
         $target = $magentoDirectory . $directoryHelper::DS . $imitationDirectoryName;
-        if($imitationDirectoryName==".htaccess"):
-            echo $target."\n".$link."\n";
-            endif;
+
         return symlink($target, $link);
     }
 
