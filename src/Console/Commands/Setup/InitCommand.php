@@ -60,7 +60,7 @@ class InitCommand extends Command
         $output->writeln("<info>Linked errors in public directory</info>");
         $this->symlinkPublicMageRoot("favicon.ico");
         $output->writeln("<info>Linked favicon.ico in public directory</info>");
-        $this->symlinkPublicMageRoot("sitemaps");
+        $this->symlinkPublicMageRoot("sitemap");
         $output->writeln("<info>Linked sitemaps in public directory</info>");
         $output->writeln([
             "<comment>All done! You can set your document root to ./public.</comment>",
@@ -88,7 +88,9 @@ class InitCommand extends Command
         $pathToPublic = $magentoDirectory . $directoryHelper::DS . "public";
         $link = $pathToPublic . $directoryHelper::DS . $imitationDirectoryName;
         $target = $magentoDirectory . $directoryHelper::DS . $imitationDirectoryName;
-
+        if($imitationDirectoryName==".htaccess"):
+            echo $target."\n".$link."\n";
+            endif;
         return symlink($target, $link);
     }
 
@@ -98,8 +100,8 @@ class InitCommand extends Command
         $magentoDirectory = $directoryHelper->getApplicationDirectory();
         $pathToPublic = $magentoDirectory . $directoryHelper::DS . "public";
         $fileContents = "<?php".
-            "\n\t\tdefine('MAGENTO_ROOT', dirname(getcwd()));".
-            "\n\t\trequire_once '../index.php';";
+            "\n\tdefine('MAGENTO_ROOT', dirname(getcwd()));".
+            "\n\trequire_once '../index.php';";
         $indexFile = $pathToPublic . $directoryHelper::DS . "index.php";
         file_put_contents($indexFile,$fileContents);
     }
