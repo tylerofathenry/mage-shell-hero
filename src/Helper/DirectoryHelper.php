@@ -18,7 +18,21 @@ class DirectoryHelper
         $parentDirectoryPosition = $this->getParentDirectoryPosition($currentDirectory, $shellSearch);
         return substr($currentDirectory, 0, $parentDirectoryPosition);
     }
-
+    function delTree($path) {
+        if(is_link($path)){
+            @unlink($path);
+        }elseif (is_dir($path)) {
+            $entries = scandir($path);
+            foreach ($entries as $entry) {
+                if ($entry != '.' && $entry != '..') {
+                    $this->delTree($path.self::DS.$entry);
+                }
+            }
+            @rmdir($path);
+        } else {
+            @unlink($path);
+        }
+    }
     /**
      * @return string
      */

@@ -5,14 +5,11 @@ namespace Etre\Shell\Console\Commands\Setup;
 use Etre\Shell\Helper\DirectoryHelper;
 use Etre\Shell\Helper\PatchesHelper;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Helper\TableCell;
-use Symfony\Component\Console\Input\InputDefinition;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Process\ProcessBuilder;
 
 class InitCommand extends Command
 {
@@ -45,7 +42,17 @@ class InitCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        $this->getApplication()->initMagento();
+        $directoryHelper = $this->directoryHelper;
+        $magentoDirectory = $directoryHelper->getApplicationDirectory();
+        $pathToPublic = $magentoDirectory . $directoryHelper::DS . "public";
+        if(file_exists($pathToPublic)):
+            $helper = $this->getHelper('question');
+            $question = new ConfirmationQuestion("<info>./public directory already exists. Do you want to continue delete this directory and continue?</info><comment>[Default: No]</comment> ", false);
+            if (!$helper->ask($input, $output, $question)) {
+                return;
+            }
+            $directoryHelper->delTree($pathToPublic);
+        endif;
         $this->makePublicDirectory();
         $output->writeln("<info>Created ./public directory</info>");
         $this->symlinkPublicMageRoot(".htaccess");
@@ -68,7 +75,7 @@ class InitCommand extends Command
         $output->writeln("<info>Linked var in public directory</info>");
         $output->writeln([
             "<comment>All done! You can set your document root to ./public.</comment>",
-            "\t<info> - Please make sure your public directory and index.php are accessible by your server.</info>"
+            "\t<info> - Please make sure your public directory and index.php are accessible by your server.</info>",
         ]);
 
     }
@@ -81,8 +88,7 @@ class InitCommand extends Command
         $directoryHelper = $this->directoryHelper;
         $magentoDirectory = $directoryHelper->getApplicationDirectory();
         $pathToPublic = $magentoDirectory . $directoryHelper::DS . "public";
-        mageDelTree($pathToPublic);
-        return mkdir($pathToPublic,2770);
+        return mkdir($pathToPublic);
     }
 
     protected function symlinkPublicMageRoot($imitationDirectoryName)
@@ -93,7 +99,7 @@ class InitCommand extends Command
         $link = $pathToPublic . $directoryHelper::DS . $imitationDirectoryName;
         $target = $magentoDirectory . $directoryHelper::DS . $imitationDirectoryName;
 
-        return symlink($target, $link);
+        return @symlink($target, $link);
     }
 
     protected function createIndex()
@@ -101,11 +107,11 @@ class InitCommand extends Command
         $directoryHelper = $this->directoryHelper;
         $magentoDirectory = $directoryHelper->getApplicationDirectory();
         $pathToPublic = $magentoDirectory . $directoryHelper::DS . "public";
-        $fileContents = "<?php".
-            "\n\tdefine('MAGENTO_ROOT', dirname(getcwd()));".
+        $fileContents = "<?php" .
+            "\n\tdefine('MAGENTO_ROOT', dirname(getcwd()));" .
             "\n\trequire_once '../index.php';";
         $indexFile = $pathToPublic . $directoryHelper::DS . "index.php";
-        file_put_contents($indexFile,$fileContents);
+        file_put_contents($indexFile, $fileContents);
     }
 
     /**
