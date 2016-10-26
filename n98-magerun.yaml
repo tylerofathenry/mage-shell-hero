@@ -7,3 +7,4 @@ commands:
     - Etre\Shell\Console\Commands\Patch\DebugCommand
     - Etre\Shell\Console\Commands\Import\ProductsCommand
     - Etre\Shell\Console\Commands\Import\ListCommand
+    - Etre\Shell\Console\Commands\Setup\InitCommand
