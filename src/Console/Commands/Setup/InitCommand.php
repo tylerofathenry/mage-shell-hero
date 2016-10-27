@@ -3,21 +3,20 @@
 namespace Etre\Shell\Console\Commands\Setup;
 
 use Etre\Shell\Helper\DirectoryHelper;
-use Etre\Shell\Helper\PatchesHelper;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Process\ProcessBuilder;
 
 class InitCommand extends Command
 {
     /** @var DirectoryHelper $directoryHelper */
     protected $directoryHelper;
 
-    /** @var PatchesHelper $patchesHelper */
-    protected $patchesHelper;
+    /** @var string $directoryHelper public directory name */
+    protected $publicDirName;
+
 
     /**
      * PatchCommand constructor.
@@ -26,7 +25,6 @@ class InitCommand extends Command
     public function __construct($name = null)
     {
         $this->directoryHelper = new DirectoryHelper();
-        $this->patchesHelper = new PatchesHelper($this->directoryHelper);
 
         parent::__construct($name);
     }
@@ -35,6 +33,7 @@ class InitCommand extends Command
     {
         $this
             ->setName('etre:setup:init')
+            ->addArgument("site-path", InputArgument::OPTIONAL, 'Defaults to "public"', "public")
             ->setDescription('Create public directory and symlink js, media, and skin directories.')
             ->setHelp("Create a Magento \"public\" director to assist in protecting application code.");
     }
@@ -44,38 +43,38 @@ class InitCommand extends Command
 
         $directoryHelper = $this->directoryHelper;
         $magentoDirectory = $directoryHelper->getApplicationDirectory();
-        $pathToPublic = $magentoDirectory . $directoryHelper::DS . "public";
-        if(file_exists($pathToPublic)):
+        $this->publicDirName = $magentoDirectory . $directoryHelper::DS . $input->getArgument("site-path");
+        if(file_exists($this->publicDirName)):
             $helper = $this->getHelper('question');
-            $question = new ConfirmationQuestion("<info>./public directory already exists. Do you want to continue delete this directory and continue?</info><comment>[Default: No]</comment> ", false);
-            if (!$helper->ask($input, $output, $question)) {
+            $question = new ConfirmationQuestion("<info>{$this->publicDirName} directory already exists. Do you want to continue delete this directory and continue?</info><comment>[Default: No]</comment> ", false);
+            if(!$helper->ask($input, $output, $question)) {
                 return;
             }
-            $directoryHelper->delTree($pathToPublic);
+            $directoryHelper->delTree($this->publicDirName);
         endif;
         $this->makePublicDirectory();
         $output->writeln("<info>Created ./public directory</info>");
-        $this->symlinkPublicMageRoot(".htaccess");
-        $output->writeln("<info>Linked .htaccess in public directory</info>");
         $this->createIndex();
-        $output->writeln("<info>Created index.php in public directory</info>");
-        $this->symlinkPublicMageRoot("js");
-        $output->writeln("<info>Linked js in public directory</info>");
-        $this->symlinkPublicMageRoot("skin");
-        $output->writeln("<info>Linked skin in public directory</info>");
-        $this->symlinkPublicMageRoot("media");
-        $output->writeln("<info>Linked media in public directory</info>");
-        $this->symlinkPublicMageRoot("errors");
-        $output->writeln("<info>Linked errors in public directory</info>");
-        $this->symlinkPublicMageRoot("favicon.ico");
-        $output->writeln("<info>Linked favicon.ico in public directory</info>");
-        $this->symlinkPublicMageRoot("sitemap");
-        $output->writeln("<info>Linked sitemaps in public directory</info>");
-        $this->symlinkPublicMageRoot("var");
-        $output->writeln("<info>Linked var in public directory</info>");
+        $output->writeln("<info>Creating .gitignore.</info>");
+        $this->createGitIgnore();
+        $this->createLink(".htaccess", $output);
+        $this->createLink("js", $output);
+        $this->createLink("media", $output);
+        $this->createLink("skin", $output);
+        $this->createLink("favicon.ico", $output);
+        $this->createLink("sitemap", $output);
+        if($input->hasArgument("site-path")):
+            $completeMessage = "<comment>All done! A Magento site can now be pointed to </comment>{$input->getArgument('site-path')}";
+        else:
+            $completeMessage = "<comment>All done! You can set your document root to </comment>{$this->publicDirName}";
+        endif;
         $output->writeln([
-            "<comment>All done! You can set your document root to ./public.</comment>",
-            "\t<info> - Please make sure your public directory and index.php are accessible by your server.</info>",
+            $completeMessage,
+            "\t<info>1. Make sure your server can access </info>{$this->publicDirName}",
+            "\t<info>2. This directory uses symbolic links. Magento's Apache rules enable this by default and should not cause a problem.</info>",
+            "\t<info>3. A .gitignore file has been created.</info>",
+            "\t\t<info>- The contents in this directory will not be added to a Git repository since the symbolic links paths are absolute.</info>",
+            "\t\t<info>- This command will need to be executed again in production if the file paths are different.</info>",
         ]);
 
     }
@@ -85,33 +84,56 @@ class InitCommand extends Command
      */
     protected function makePublicDirectory()
     {
-        $directoryHelper = $this->directoryHelper;
-        $magentoDirectory = $directoryHelper->getApplicationDirectory();
-        $pathToPublic = $magentoDirectory . $directoryHelper::DS . "public";
-        return mkdir($pathToPublic);
-    }
-
-    protected function symlinkPublicMageRoot($imitationDirectoryName)
-    {
-        $directoryHelper = $this->directoryHelper;
-        $magentoDirectory = $directoryHelper->getApplicationDirectory();
-        $pathToPublic = $magentoDirectory . $directoryHelper::DS . "public";
-        $link = $pathToPublic . $directoryHelper::DS . $imitationDirectoryName;
-        $target = $magentoDirectory . $directoryHelper::DS . $imitationDirectoryName;
-
-        return @symlink($target, $link);
+        return mkdir($this->publicDirName);
     }
 
     protected function createIndex()
     {
         $directoryHelper = $this->directoryHelper;
         $magentoDirectory = $directoryHelper->getApplicationDirectory();
-        $pathToPublic = $magentoDirectory . $directoryHelper::DS . "public";
-        $fileContents = "<?php" .
-            "\n\tdefine('MAGENTO_ROOT', dirname(getcwd()));" .
-            "\n\trequire_once '../index.php';";
+        $pathToPublic = $this->publicDirName;
+        $fileContents = '<?php
+
+    define(\'MAGENTO_ROOT\', \'' . $magentoDirectory . '\');
+    $maintenanceFile = MAGENTO_ROOT . \'/maintenance.flag\';
+
+    if (file_exists($maintenanceFile)) {
+        include_once MAGENTO_ROOT . \'/errors/503.php\';
+        exit;
+    }
+
+    require_once MAGENTO_ROOT.\'/index.php\';';
         $indexFile = $pathToPublic . $directoryHelper::DS . "index.php";
         file_put_contents($indexFile, $fileContents);
+    }
+
+    protected function createGitIgnore()
+    {
+        $directoryHelper = $this->directoryHelper;
+        $pathToPublic = $this->publicDirName;
+        $fileContents = '*';
+        $indexFile = $pathToPublic . $directoryHelper::DS . ".gitignore";
+        file_put_contents($indexFile, $fileContents);
+    }
+
+    /**
+     * @param OutputInterface $output
+     */
+    protected function createLink($magentoPath, OutputInterface $output)
+    {
+        $this->symlinkPublicMageRoot($magentoPath);
+        $output->writeln("<info>Linked $magentoPath in public directory</info>");
+    }
+
+    protected function symlinkPublicMageRoot($imitationDirectoryName)
+    {
+        $directoryHelper = $this->directoryHelper;
+        $magentoDirectory = $directoryHelper->getApplicationDirectory();
+        $pathToPublic = $this->publicDirName;
+        $link = $pathToPublic . $directoryHelper::DS . $imitationDirectoryName;
+        $target = $magentoDirectory . $directoryHelper::DS . $imitationDirectoryName;
+
+        return @symlink($target, $link);
     }
 
     /**
