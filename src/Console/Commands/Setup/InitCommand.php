@@ -4,6 +4,7 @@ namespace Etre\Shell\Console\Commands\Setup;
 
 use Etre\Shell\Helper\DirectoryHelper;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -57,7 +58,7 @@ class InitCommand extends Command
         $this->createIndex();
         $output->writeln("<info>Creating .gitignore.</info>");
         $this->createGitIgnore();
-        $this->createLink(".htaccess", $output);
+        $this->cp(".htaccess", $output);
         $this->createLink("js", $output);
         $this->createLink("media", $output);
         $this->createLink("skin", $output);
@@ -123,6 +124,28 @@ class InitCommand extends Command
     {
         $this->symlinkPublicMageRoot($magentoPath);
         $output->writeln("<info>Linked $magentoPath in public directory</info>");
+    }
+
+    /**
+     * @param OutputInterface $output
+     */
+    protected function cp($magentoPath, OutputInterface $output)
+    {
+        $style = new OutputFormatterStyle('red', 'yellow', array('bold', 'blink'));
+        $output->getFormatter()->setStyle('warning', $style);
+
+        $directoryHelper = $this->directoryHelper;
+        $magentoDirectory = $directoryHelper->getApplicationDirectory();
+        $pathToPublic = $this->publicDirName;
+        $destination = $pathToPublic . $directoryHelper::DS . $magentoPath;
+        $source = $magentoDirectory . $directoryHelper::DS . $magentoPath;
+        copy($source,$destination);
+        $output->writeln([
+            "<info>Copied</info> $magentoPath <info>to </info> $destination",
+            "<warning>Notice:</warning> <comment>If the path to the new site is </comment>http://[magento-root]/newsite...",
+            "\t<comment>1. Uncomment RewriteBase in</comment> $destination",
+            "\t<comment>2. Set </comment>RewriteBase /newsite/",
+        ]);
     }
 
     protected function symlinkPublicMageRoot($imitationDirectoryName)
