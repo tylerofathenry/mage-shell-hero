@@ -12,7 +12,9 @@
   "require": {
     "composer/installers": "~1.0",
     "etre/magerun": "^1.97.22.1",
-    "phpoffice/phpexcel": "^1.8"
+    "phpoffice/phpexcel": "^1.8",
+    "doctrine/migrations": "^1.4",
+    "symfony/filesystem": "^3.2"
   },
   "license": "GPL-3.0",
   "authors": [

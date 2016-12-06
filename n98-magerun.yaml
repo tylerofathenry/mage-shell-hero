@@ -8,3 +8,10 @@ commands:
     - Etre\Shell\Console\Commands\Import\ProductsCommand
     - Etre\Shell\Console\Commands\Import\ListCommand
     - Etre\Shell\Console\Commands\Setup\InitCommand
+    - Etre\Shell\Console\Commands\Migrations\Settings\InitCommand
+    - Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand
+    - Doctrine\DBAL\Migrations\Tools\Console\Command\ExecuteCommand
+    - Etre\Shell\Console\Commands\Migrations\GenerateCommand
+    - Etre\Shell\Console\Commands\Migrations\MigrateCommand
+    - Etre\Shell\Console\Commands\Migrations\StatusCommand
+    - Etre\Shell\Console\Commands\Migrations\VersionCommand
