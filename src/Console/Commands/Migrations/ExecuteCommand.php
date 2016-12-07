@@ -14,7 +14,7 @@ class ExecuteCommand extends DoctrineExecuteCommand {
     protected function configure() {
 
         parent::configure();
-        $this->setName('etre:migrations:diff');
+        $this->setName('etre:migrations:execute');
         $this->migrationsHelper = new MigrationsHelper();
     }
 

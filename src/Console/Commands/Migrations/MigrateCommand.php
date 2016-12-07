@@ -2,15 +2,10 @@
 
 namespace Etre\Shell\Console\Commands\Migrations;
 
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DriverManager;
-use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\MigrateCommand as DoctrineMigrateCommand;
 use Etre\Shell\Helper\MigrationsHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Filesystem\Filesystem;
 
 class MigrateCommand extends DoctrineMigrateCommand {
 
