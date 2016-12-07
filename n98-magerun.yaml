@@ -1,0 +1,17 @@
+autoloaders:
+  Etre\Shell: %module%/src
+
+commands:
+  customCommands:
+    - Etre\Shell\Console\Commands\Patch\ListCommand
+    - Etre\Shell\Console\Commands\Patch\DebugCommand
+    - Etre\Shell\Console\Commands\Import\ProductsCommand
+    - Etre\Shell\Console\Commands\Import\ListCommand
+    - Etre\Shell\Console\Commands\Setup\InitCommand
+    - Etre\Shell\Console\Commands\Migrations\Settings\InitCommand
+    - Etre\Shell\Console\Commands\Migrations\DiffCommand
+    - Etre\Shell\Console\Commands\Migrations\ExecuteCommand
+    - Etre\Shell\Console\Commands\Migrations\GenerateCommand
+    - Etre\Shell\Console\Commands\Migrations\MigrateCommand
+    - Etre\Shell\Console\Commands\Migrations\StatusCommand
+    - Etre\Shell\Console\Commands\Migrations\VersionCommand
